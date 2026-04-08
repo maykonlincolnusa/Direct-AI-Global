@@ -1,14 +1,14 @@
 # DIRECT - 统一业务上下文平台
 
-DIRECT 是一个以上下文为核心的平台。它**不是**用于给客户搭建网站的产品。平台会从多个数据源采集并统一业务上下文，让 IA 能在销售、财务、运营和数字渠道上进行整体推理。
+DIRECT 是一个以业务上下文为核心的平台。它不是用来为客户搭建网站的产品。平台从多个来源摄取、规范化并统一业务上下文，让 AI 能把销售、财务、运营、数字渠道和知识资产作为一个整体来理解。
 
 ## 适用行业
 
-DIRECT 适用于以下行业场景：
+DIRECT 适用于以下行业：
 
 1. B2B 服务与咨询公司
 2. SaaS 与科技公司
-3. 零售与电商运营
+3. 零售与电商业务
 4. 诊所与私营医疗服务
 5. 教育与培训机构
 6. 房地产中介与经纪机构
@@ -17,37 +17,46 @@ DIRECT 适用于以下行业场景：
 9. 汽车销售与售后服务
 10. 制造与分销团队
 
-## 已实现能力
+## 已实现的基线能力
 
-1. 数据连接器：Website Reader、Google Business Profile、CRM、ERP、Financial、Social、Manual Upload
+1. 数据连接器：Website Reader、Google Business Profile、HubSpot CRM、Stripe Finance、ERP REST、Social RSS/Atom、Manual Upload
 2. 上下文摄取流水线：payload 校验、原始与标准化数据持久化、幂等 fingerprint、上下文版本管理、审计日志
-3. 标准数据模型：Customer、Lead、Company、Product、Order、Payment、FinancialRecord、OperationalEvent、Message、WebsitePage、SocialPost、BusinessProfile、Document、FileAsset、Review、Campaign
-4. Website Reader 模块：首页、sitemap 页面、SEO metadata、标题结构、CTA、导航、社会证明、关键词、语气与定位信号
-5. 知识库与检索：chunking、embeddings、按 tenant 隔离的语义检索
-6. 上下文 IA 引擎：摘要、机会识别、不一致检测、行动建议、上下文问答
-7. 集成注册中心：状态、cursor、优先级、健康度、环境变量凭证引用
-8. HTTP API：注册、同步、摘要、建议与问答
+3. 标准化模型：`Customer`、`Lead`、`Company`、`Product`、`Order`、`Payment`、`FinancialRecord`、`OperationalEvent`、`Message`、`WebsitePage`、`SocialPost`、`BusinessProfile`、`Document`、`FileAsset`、`Review`、`Campaign`
+4. 知识库与 RAG 运行时：chunking、embeddings、语义 retrieval、reranking
+5. 上下文 AI 引擎：模型路由、confidence score、上下文问答、使用量跟踪、按使用量计费估算
+6. React 控制台：industry profile、readiness、execution plan、连接器覆盖率和 AI 使用情况仪表盘
+7. 多云基线：AWS、GCP、Azure、Oracle Cloud Infrastructure (OCI) 与 Railway
 
-## 运行方式
+## 本地运行
 
 ```bash
-npm install
+npm ci
+npm run platform-api:build
 npm run direct:build
-npm run direct:start
+npm run console:build
 ```
 
-默认地址：`http://localhost:4300`
+Context API 默认地址：`http://localhost:4300`
 
-## 关键 API 路由
+## 主要路由
 
 1. `GET /health`
 2. `POST /api/tenants/:tenantId/connectors/register`
 3. `POST /api/tenants/:tenantId/sync/:connectorType`
 4. `GET /api/tenants/:tenantId/connectors`
-5. `GET /api/tenants/:tenantId/context/summary`
-6. `GET /api/tenants/:tenantId/context/suggestions`
-7. `POST /api/tenants/:tenantId/context/ask`
+5. `GET /api/tenants/:tenantId/connectors/recommendations`
+6. `GET /api/tenants/:tenantId/context/summary`
+7. `GET /api/tenants/:tenantId/context/industry`
+8. `GET /api/tenants/:tenantId/context/readiness`
+9. `GET /api/tenants/:tenantId/context/execution-plan`
+10. `GET /api/tenants/:tenantId/context/usage`
+11. `POST /api/tenants/:tenantId/context/ask`
 
 ## 文档
 
-主架构文档：`docs/direct-context-architecture.md`
+- 主架构文档：`docs/architecture.md`
+- 上下文平台文档：`docs/direct-context-architecture.md`
+- 生产就绪文档：`docs/production-readiness.md`
+- RAG 与向量运行时：`docs/rag-vector-runtime.md`
+- 多云基础设施：`infra/README.md`
+

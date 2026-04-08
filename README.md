@@ -1,6 +1,6 @@
 # DIRECT Platform
 
-DIRECT is a context-first business platform. It ingests sales, financial, operational and digital data, normalizes it into tenant-safe entities, and powers AI over unified context.
+DIRECT is a context-first business platform. It does not build websites for clients. It ingests, normalizes and unifies business context from multiple sources so AI can reason over sales, finance, operations, digital presence and knowledge assets in one place.
 
 ## Language versions
 
@@ -11,12 +11,30 @@ DIRECT is a context-first business platform. It ingests sales, financial, operat
 - Japanese: [README.ja.md](README.ja.md)
 - Mandarin Chinese: [README.zh-CN.md](README.zh-CN.md)
 
-## Production readiness docs
+## Current platform baseline
 
-- Architecture: [docs/architecture.md](docs/architecture.md)
-- Production hardening: [docs/production-readiness.md](docs/production-readiness.md)
-- RAG runtime and vector adapters: [docs/rag-vector-runtime.md](docs/rag-vector-runtime.md)
-- Multi-cloud infra: [infra/README.md](infra/README.md)
+- Unified context ingestion with raw persistence, canonical normalization, idempotent fingerprinting and versioned context snapshots
+- Canonical business model for `Customer`, `Lead`, `Company`, `Product`, `Order`, `Payment`, `FinancialRecord`, `OperationalEvent`, `Message`, `WebsitePage`, `SocialPost`, `BusinessProfile`, `Document`, `FileAsset`, `Review` and `Campaign`
+- Tenant-scoped knowledge base with chunking, embeddings, semantic retrieval and reranking
+- AI layer with model routing, confidence scoring, token usage tracking and usage-based billing estimates
+- React console with dashboards for `industry profile`, `readiness`, `execution plan`, connector health and AI usage
+- Production-ready connectors for Website Reader, Google Business Profile, HubSpot CRM, Stripe Finance, ERP REST, Social RSS/Atom and Manual Upload
+- Multi-cloud deployment baseline for AWS, GCP, Azure, Oracle Cloud Infrastructure (OCI) and Railway
+
+## Industries served
+
+DIRECT is designed to support:
+
+1. B2B services and consulting firms
+2. SaaS and technology companies
+3. Retail and e-commerce operations
+4. Healthcare clinics and private practices
+5. Education and training businesses
+6. Real estate agencies and brokerages
+7. Hospitality, restaurants and local service chains
+8. Beauty, wellness and personal care brands
+9. Automotive sales and service operations
+10. Manufacturing and distribution teams
 
 ## Monorepo layout
 
@@ -32,7 +50,7 @@ tests/
 docs/
 ```
 
-## Quick start (local)
+## Run locally
 
 ```bash
 npm ci
@@ -48,28 +66,49 @@ docker compose up --build
 ```
 
 Services:
+
 - Platform API: `http://localhost:3000`
 - Context API: `http://localhost:4300`
-- Console: `http://localhost:8080`
+- React Console: `http://localhost:8080`
 - RabbitMQ UI: `http://localhost:15672`
+
+## Key API routes
+
+1. `GET /health`
+2. `POST /api/tenants/:tenantId/connectors/register`
+3. `POST /api/tenants/:tenantId/sync/:connectorType`
+4. `GET /api/tenants/:tenantId/connectors`
+5. `GET /api/tenants/:tenantId/connectors/recommendations`
+6. `GET /api/tenants/:tenantId/context/summary`
+7. `GET /api/tenants/:tenantId/context/industry`
+8. `GET /api/tenants/:tenantId/context/readiness`
+9. `GET /api/tenants/:tenantId/context/execution-plan`
+10. `GET /api/tenants/:tenantId/context/usage`
+11. `POST /api/tenants/:tenantId/context/ask`
 
 ## Security and tenancy baseline
 
-- JWT access + refresh token rotation
-- Tenant isolation enforcement (`x-tenant-id` vs token)
+- JWT access and refresh token rotation
+- Tenant isolation enforcement
 - Input sanitization and payload size limits
-- Rate limiting and brute force login lock
+- Rate limiting and brute force protection
 - Structured logs with correlation IDs
+- Auditability for context ingestion and AI usage
 
-## CI/CD
+## Documentation
+
+- Architecture: [docs/architecture.md](docs/architecture.md)
+- Context platform: [docs/direct-context-architecture.md](docs/direct-context-architecture.md)
+- Multi-industrial strategy: [docs/multi-industrial-context-platform.md](docs/multi-industrial-context-platform.md)
+- Production hardening: [docs/production-readiness.md](docs/production-readiness.md)
+- RAG runtime and vector adapters: [docs/rag-vector-runtime.md](docs/rag-vector-runtime.md)
+- Multi-cloud infrastructure: [infra/README.md](infra/README.md)
+
+## CI/CD and operations
 
 - CI workflow: `.github/workflows/ci.yml`
 - Multi-cloud deploy workflow: `.github/workflows/deploy-multicloud.yml`
-- Supported deployment targets: AWS, GCP, Azure, Oracle Cloud Infrastructure (OCI) and Railway
+- Readiness gate: `npm run readiness:check`
+- Test suite: `npm run test:all`
+- Security audit: `npm run security:check`
 
-## Useful scripts
-
-- `npm run readiness:check`
-- `npm run db:indexes`
-- `npm run db:backup`
-- `npm run load:test -- http://localhost:3000/health 200 20`

@@ -1,10 +1,10 @@
 # DIRECT - 統合ビジネスコンテキストプラットフォーム
 
-DIRECT はコンテキスト中心のプラットフォームです。クライアント向けに Web サイトを制作する製品ではありません。複数のデータソースからビジネスコンテキストを取り込み、販売、財務、オペレーション、デジタル活動を IA が一体で理解できるようにします。
+DIRECT はコンテキスト中心のプラットフォームです。クライアント向けに Web サイトを制作するための製品ではありません。複数のソースからビジネスコンテキストを取り込み、正規化し、統合することで、AI が営業、財務、オペレーション、デジタル施策、ナレッジ資産をひとつの事業として理解できるようにします。
 
 ## 対応業界
 
-DIRECT は次の業界で利用できます。
+DIRECT は次の業界に対応します。
 
 1. B2B サービスおよびコンサルティング
 2. SaaS およびテクノロジー企業
@@ -17,37 +17,46 @@ DIRECT は次の業界で利用できます。
 9. 自動車販売およびアフターサービス
 10. 製造および流通チーム
 
-## 実装済み機能
+## 実装済みベースライン
 
-1. ソースコネクタ: Website Reader、Google Business Profile、CRM、ERP、Financial、Social、Manual Upload
-2. コンテキスト取り込みパイプライン: ペイロード検証、生データと正規化データ保存、冪等 fingerprint、コンテキスト版管理、監査ログ
-3. 正規化モデル: Customer、Lead、Company、Product、Order、Payment、FinancialRecord、OperationalEvent、Message、WebsitePage、SocialPost、BusinessProfile、Document、FileAsset、Review、Campaign
-4. Website Reader モジュール: ホームページ、sitemap、SEO metadata、見出し、CTA、ナビゲーション、社会的証明、キーワード、トーン、ポジショニング信号
-5. ナレッジベースと検索: chunking、embeddings、tenant 単位のセマンティック検索
-6. コンテキスト IA エンジン: 要約、機会検出、不整合検出、提案、文脈 QA
-7. 統合レジストリ: 状態、cursor、優先度、ヘルス、環境変数ベースの資格情報参照
-8. HTTP API: 登録、同期、要約、提案、質問
+1. ソースコネクタ: Website Reader、Google Business Profile、HubSpot CRM、Stripe Finance、ERP REST、Social RSS/Atom、Manual Upload
+2. コンテキスト取り込みパイプライン: payload 検証、生データと正規化データの保存、冪等 fingerprint、コンテキストのバージョン管理、監査ログ
+3. 正規化モデル: `Customer`、`Lead`、`Company`、`Product`、`Order`、`Payment`、`FinancialRecord`、`OperationalEvent`、`Message`、`WebsitePage`、`SocialPost`、`BusinessProfile`、`Document`、`FileAsset`、`Review`、`Campaign`
+4. ナレッジベースと RAG ランタイム: chunking、embeddings、セマンティック retrieval、reranking
+5. コンテキスト AI エンジン: モデルルーティング、confidence score、文脈 QA、利用量追跡、従量課金推定
+6. React コンソール: industry profile、readiness、execution plan、コネクタカバレッジ、AI usage のダッシュボード
+7. マルチクラウド基盤: AWS、GCP、Azure、Oracle Cloud Infrastructure (OCI)、Railway
 
-## 実行方法
+## ローカル実行
 
 ```bash
-npm install
+npm ci
+npm run platform-api:build
 npm run direct:build
-npm run direct:start
+npm run console:build
 ```
 
-デフォルト URL: `http://localhost:4300`
+Context API のデフォルト URL: `http://localhost:4300`
 
-## 主要 API ルート
+## 主要ルート
 
 1. `GET /health`
 2. `POST /api/tenants/:tenantId/connectors/register`
 3. `POST /api/tenants/:tenantId/sync/:connectorType`
 4. `GET /api/tenants/:tenantId/connectors`
-5. `GET /api/tenants/:tenantId/context/summary`
-6. `GET /api/tenants/:tenantId/context/suggestions`
-7. `POST /api/tenants/:tenantId/context/ask`
+5. `GET /api/tenants/:tenantId/connectors/recommendations`
+6. `GET /api/tenants/:tenantId/context/summary`
+7. `GET /api/tenants/:tenantId/context/industry`
+8. `GET /api/tenants/:tenantId/context/readiness`
+9. `GET /api/tenants/:tenantId/context/execution-plan`
+10. `GET /api/tenants/:tenantId/context/usage`
+11. `POST /api/tenants/:tenantId/context/ask`
 
 ## ドキュメント
 
-メインアーキテクチャ資料: `docs/direct-context-architecture.md`
+- メインアーキテクチャ: `docs/architecture.md`
+- コンテキストプラットフォーム: `docs/direct-context-architecture.md`
+- 本番運用準備: `docs/production-readiness.md`
+- RAG とベクターランタイム: `docs/rag-vector-runtime.md`
+- マルチクラウド infra: `infra/README.md`
+
