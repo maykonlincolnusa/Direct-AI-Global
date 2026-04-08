@@ -1,0 +1,21 @@
+{
+  "name": "@apps/knowledge-pipeline",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "ingest": "npm run build && node dist/index.js",
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "csv-parse": "^5.5.6",
+    "franc": "^6.2.0",
+    "mammoth": "^1.8.0",
+    "pdf-parse": "^1.1.1",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3"
+  }
+}

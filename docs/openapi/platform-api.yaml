@@ -1,0 +1,72 @@
+openapi: 3.0.3
+info:
+  title: DIRECT Platform API
+  version: 1.0.0
+servers:
+  - url: https://api.direct.example.com
+  - url: http://localhost:3000
+paths:
+  /health:
+    get:
+      summary: Liveness health check
+      responses:
+        "200":
+          description: Healthy
+  /ready:
+    get:
+      summary: Readiness status
+      responses:
+        "200":
+          description: Ready
+  /v1/auth/login:
+    post:
+      summary: Create access and refresh tokens
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tenantId:
+                  type: string
+                userId:
+                  type: string
+                roles:
+                  type: array
+                  items:
+                    type: string
+              required: [tenantId, userId]
+      responses:
+        "200":
+          description: Token pair issued
+  /v1/auth/refresh:
+    post:
+      summary: Rotate refresh token and issue new access token
+      responses:
+        "200":
+          description: Token rotated
+  /v1/gateway/status:
+    get:
+      summary: Gateway status
+      responses:
+        "200":
+          description: Gateway metadata
+  /v1/core/events/publish:
+    post:
+      summary: Publish domain event with retry and DLQ policy
+      responses:
+        "202":
+          description: Accepted
+  /v1/core/billing/usage:
+    post:
+      summary: Track usage for billing
+      responses:
+        "202":
+          description: Usage tracked
+  /v1/core/ia/usage:
+    post:
+      summary: Track AI usage and cost metrics
+      responses:
+        "202":
+          description: Usage tracked

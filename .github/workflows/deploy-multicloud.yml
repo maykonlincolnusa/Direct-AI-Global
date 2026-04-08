@@ -1,0 +1,50 @@
+name: Deploy Multi-Cloud
+
+on:
+  workflow_dispatch:
+    inputs:
+      provider:
+        description: "Target provider"
+        required: true
+        type: choice
+        options:
+          - aws
+          - gcp
+          - azure
+          - railway
+      environment:
+        description: "Deployment environment"
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build artifacts
+        run: |
+          npm run platform-api:build
+          npm run direct:build
+          npm run console:build
+
+      - name: Show deployment contract
+        run: |
+          echo "provider=${{ github.event.inputs.provider }}"
+          echo "environment=${{ github.event.inputs.environment }}"
+          echo "Use infra/${{ github.event.inputs.provider }}/terraform for IaC apply."

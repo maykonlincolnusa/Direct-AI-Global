@@ -1,0 +1,13 @@
+node_modules
+dist
+dist-direct
+.git
+.gitignore
+.vscode
+.direct-context-data
+knowledge-base
+logs
+coverage
+tmp
+downloads
+*.log

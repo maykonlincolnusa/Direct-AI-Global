@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2022"],
+    "resolveJsonModule": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "declaration": true,
+    "sourceMap": true,
+    "composite": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "baseUrl": ".",
+    "paths": {
+      "@direct/config": ["packages/config/src"],
+      "@direct/logger": ["packages/logger/src"],
+      "@direct/shared-auth": ["packages/shared/auth/src"],
+      "@direct/shared-billing": ["packages/shared/billing/src"],
+      "@direct/shared-globalization": ["packages/shared/globalization/src"],
+      "@direct/shared-ia": ["packages/shared/ia/src"],
+      "@direct/shared-observability": ["packages/shared/observability/src"],
+      "@direct/shared-tenant": ["packages/shared/tenant/src"],
+      "@direct/contracts": ["packages/contracts/src"],
+      "@direct/contracts/*": ["packages/contracts/src/*"]
+    }
+  }
+}

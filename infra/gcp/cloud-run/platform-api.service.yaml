@@ -1,0 +1,54 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: direct-platform-api
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: "1"
+        autoscaling.knative.dev/maxScale: "10"
+        run.googleapis.com/execution-environment: gen2
+    spec:
+      containerConcurrency: 80
+      timeoutSeconds: 300
+      containers:
+        - image: <region>-docker.pkg.dev/<project-id>/<repository>/direct-platform-api:latest
+          ports:
+            - name: http1
+              containerPort: 3000
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: CLOUD_PROVIDER
+              value: gcp
+            - name: PORT
+              value: "3000"
+            - name: APP_REGION
+              value: US
+            - name: LOG_LEVEL
+              value: info
+            - name: DEFAULT_LOCALE
+              value: en-US
+            - name: DEFAULT_CURRENCY
+              value: USD
+            - name: RATE_LIMIT_POINTS
+              value: "1500"
+            - name: RATE_LIMIT_WINDOW_MS
+              value: "60000"
+            - name: TOKEN_BUDGET_BASE
+              value: "1200"
+            - name: JWT_SECRET
+              value: <inject-from-secret-manager>
+            - name: MONGO_URI
+              value: <inject-from-secret-manager>
+            - name: REDIS_URL
+              value: <inject-from-secret-manager>
+            - name: RABBITMQ_URL
+              value: <inject-from-secret-manager>
+            - name: OPENROUTER_API_KEY
+              value: <inject-from-secret-manager>
+          resources:
+            limits:
+              cpu: "1"
+              memory: "2Gi"

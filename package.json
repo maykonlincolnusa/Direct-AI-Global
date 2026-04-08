@@ -1,0 +1,40 @@
+{
+  "name": "direct-global",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "packages/shared/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "platform-api:build": "node --max-old-space-size=4096 ./node_modules/typescript/bin/tsc -p packages/config/tsconfig.json && node --max-old-space-size=4096 ./node_modules/typescript/bin/tsc -p packages/contracts/tsconfig.json && node --max-old-space-size=4096 ./node_modules/typescript/bin/tsc -p packages/logger/tsconfig.json && node --max-old-space-size=4096 ./node_modules/typescript/bin/tsc -p packages/shared/auth/tsconfig.json && node --max-old-space-size=4096 ./node_modules/typescript/bin/tsc -p packages/shared/billing/tsconfig.json && node --max-old-space-size=4096 ./node_modules/typescript/bin/tsc -p packages/shared/globalization/tsconfig.json && node --max-old-space-size=4096 ./node_modules/typescript/bin/tsc -p packages/shared/ia/tsconfig.json && node --max-old-space-size=4096 ./node_modules/typescript/bin/tsc -p packages/shared/observability/tsconfig.json && node --max-old-space-size=4096 ./node_modules/typescript/bin/tsc -p packages/shared/tenant/tsconfig.json && node --max-old-space-size=4096 ./node_modules/typescript/bin/tsc -p apps/platform-api/tsconfig.json",
+    "platform-api:start": "node apps/platform-api/dist/index.js",
+    "console:dev": "npm run dev --workspace @apps/direct-console",
+    "console:build": "npm run build --workspace @apps/direct-console",
+    "ingest": "npm run ingest --workspace @apps/knowledge-pipeline",
+    "direct:build": "tsc -p tsconfig.direct.json",
+    "direct:start": "npm run direct:build && node dist-direct/index.js",
+    "test": "npm run test --workspaces --if-present",
+    "test:all": "tsx --test tests/*.test.ts",
+    "lint": "npm run lint --workspaces --if-present",
+    "security:check": "npm audit --omit=dev",
+    "db:indexes": "node ./scripts/db/create-indexes.mjs",
+    "db:backup": "node ./scripts/db/backup-mongo.mjs",
+    "load:test": "node ./scripts/load/basic-load.mjs",
+    "readiness:check": "powershell -ExecutionPolicy Bypass -File ./scripts/check-readiness.ps1"
+  },
+  "engines": {
+    "node": ">=20.11.0"
+  },
+  "dependencies": {
+    "exceljs": "^4.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3"
+  }
+}
