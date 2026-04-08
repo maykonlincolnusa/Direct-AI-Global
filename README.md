@@ -65,6 +65,7 @@ Services:
 
 - CI workflow: `.github/workflows/ci.yml`
 - Multi-cloud deploy workflow: `.github/workflows/deploy-multicloud.yml`
+- Supported deployment targets: AWS, GCP, Azure, Oracle Cloud Infrastructure (OCI) and Railway
 
 ## Useful scripts
 

@@ -97,6 +97,7 @@ This document tracks the production hardening baseline implemented for DIRECT.
   - `infra/aws/terraform`
   - `infra/gcp/terraform`
   - `infra/azure/terraform`
+  - `infra/oci/terraform`
   - `infra/railway/terraform`
 
 ## 8) CI/CD and testing

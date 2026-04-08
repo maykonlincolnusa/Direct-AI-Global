@@ -51,3 +51,7 @@ URL padrao do servidor: `http://localhost:4300`
 ## Documentacao
 
 Documento principal de arquitetura: `docs/direct-context-architecture.md`
+
+## Alvos de deploy
+
+DIRECT esta preparada para AWS, GCP, Azure, Oracle Cloud Infrastructure (OCI) e Railway.

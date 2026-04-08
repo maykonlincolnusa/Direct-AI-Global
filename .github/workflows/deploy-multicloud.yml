@@ -11,6 +11,7 @@ on:
           - aws
           - gcp
           - azure
+          - oci
           - railway
       environment:
         description: "Deployment environment"

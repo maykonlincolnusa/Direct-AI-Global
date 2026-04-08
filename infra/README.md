@@ -15,6 +15,8 @@ infra/
   azure/
     containerapps/
     terraform/
+  oci/
+    terraform/
   railway/
     terraform/
   sql/
@@ -45,5 +47,6 @@ All providers must inject the same runtime variables used by `@direct/config`:
 cd infra/aws/terraform && terraform init && terraform plan
 cd infra/gcp/terraform && terraform init && terraform plan
 cd infra/azure/terraform && terraform init && terraform plan
+cd infra/oci/terraform && terraform init && terraform plan
 cd infra/railway/terraform && terraform init && terraform plan
 ```

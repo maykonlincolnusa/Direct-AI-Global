@@ -57,6 +57,7 @@ $requiredPaths = @(
   "infra/aws/terraform/main.tf",
   "infra/gcp/terraform/main.tf",
   "infra/azure/terraform/main.tf",
+  "infra/oci/terraform/main.tf",
   "infra/railway/terraform/main.tf",
   "apps/platform-api/Dockerfile",
   "apps/direct-console/Dockerfile",
