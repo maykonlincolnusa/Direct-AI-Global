@@ -1,5 +1,6 @@
 import { normalizeText } from '../utils/text';
 import { TenantKnowledgeBase } from './in-memory-knowledge-base';
+import { RerankingService } from './reranking-service';
 
 export interface Citation {
   documentId: string;
@@ -7,6 +8,11 @@ export interface Citation {
   source: string;
   title: string;
   score: number;
+  vectorScore: number;
+  lexicalScore: number;
+  qualityScore: number;
+  recencyScore: number;
+  sourceScore: number;
   excerpt: string;
   order: number;
 }
@@ -15,57 +21,49 @@ export interface RetrievalResult {
   citations: Citation[];
   contextText: string;
   signature: string;
+  diagnostics: {
+    topScore: number;
+    averageScore: number;
+    citationCount: number;
+  };
 }
 
 export class RetrievalService {
+  private readonly reranker = new RerankingService();
+
   constructor(private readonly knowledgeBase: TenantKnowledgeBase) {}
 
   async retrieve(tenantId: string, query: string, topK = 6): Promise<RetrievalResult> {
     const matches = await this.knowledgeBase.search(tenantId, query, topK * 2);
-    const reranked = matches
-      .map((match) => ({
-        ...match,
-        score: match.score + lexicalBoost(query, match.chunk.text) * 0.2
-      }))
-      .sort((left, right) => right.score - left.score)
-      .slice(0, topK);
+    const reranked = this.reranker.rerank(query, matches, topK);
 
     const citations = reranked.map((match) => ({
       documentId: match.chunk.documentId,
       chunkId: match.chunk.chunkId,
       source: String(match.chunk.metadata.source ?? 'unknown'),
       title: String(match.chunk.metadata.title ?? 'Untitled'),
-      score: Number(match.score.toFixed(4)),
+      score: Number(match.rerankScore.toFixed(4)),
+      vectorScore: Number(match.vectorScore.toFixed(4)),
+      lexicalScore: Number(match.lexicalScore.toFixed(4)),
+      qualityScore: Number(match.qualityScore.toFixed(4)),
+      recencyScore: Number(match.recencyScore.toFixed(4)),
+      sourceScore: Number(match.sourceScore.toFixed(4)),
       excerpt: compactExcerpt(match.chunk.text),
       order: match.chunk.order
     }));
+    const totalScore = citations.reduce((sum, citation) => sum + citation.score, 0);
 
     return {
       citations,
       contextText: citations.map((citation) => `[${citation.title}] ${citation.excerpt}`).join('\n\n'),
-      signature: citations.map((citation) => `${citation.chunkId}:${citation.score}`).join('|')
+      signature: citations.map((citation) => `${citation.chunkId}:${citation.score}`).join('|'),
+      diagnostics: {
+        topScore: citations[0]?.score ?? 0,
+        averageScore: citations.length > 0 ? Number((totalScore / citations.length).toFixed(4)) : 0,
+        citationCount: citations.length
+      }
     };
   }
-}
-
-function lexicalBoost(query: string, text: string) {
-  const queryTerms = new Set(tokenize(query));
-  const textTerms = new Set(tokenize(text));
-  if (queryTerms.size === 0 || textTerms.size === 0) return 0;
-
-  let matches = 0;
-  for (const term of queryTerms) {
-    if (textTerms.has(term)) matches += 1;
-  }
-  return matches / queryTerms.size;
-}
-
-function tokenize(input: string) {
-  return normalizeText(input)
-    .toLowerCase()
-    .replace(/[^\p{L}\p{N}\s]/gu, ' ')
-    .split(/\s+/g)
-    .filter((token) => token.length > 2);
 }
 
 function compactExcerpt(text: string, maxChars = 320) {

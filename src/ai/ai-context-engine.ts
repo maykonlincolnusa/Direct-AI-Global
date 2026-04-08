@@ -3,6 +3,7 @@ import { TenantKnowledgeBase } from '../knowledge_base/in-memory-knowledge-base'
 import { RetrievalService } from '../knowledge_base/retrieval-service';
 import { ContextStorage } from '../storage/context-storage';
 import { AgentOrchestrator } from './agent-orchestrator';
+import { ConfidenceEngine } from './confidence-engine';
 import { AIRuntimeManager } from './runtime-manager';
 import { AIModelRouter } from './model-router';
 import {
@@ -15,6 +16,7 @@ import {
 import { IntegrationRegistry } from '../registry/integration-registry';
 import { IndustryIntelligence } from '../industry/industry-intelligence';
 import { IndustryAssessment } from '../industry/types';
+import { UsageBillingTracker } from '../billing/usage-billing';
 
 export class AIContextEngine {
   private readonly retrieval: RetrievalService;
@@ -27,6 +29,8 @@ export class AIContextEngine {
   private readonly evaluationRunner: EvaluationRunner;
   private readonly industry: IndustryIntelligence;
   private readonly modelRouter: AIModelRouter;
+  private readonly confidenceEngine: ConfidenceEngine;
+  private readonly usageBilling: UsageBillingTracker;
 
   constructor(
     private readonly storage: ContextStorage,
@@ -43,6 +47,8 @@ export class AIContextEngine {
     this.evaluationRunner = new EvaluationRunner(this.feedbackStore, this.datasetBuilder);
     this.industry = new IndustryIntelligence();
     this.modelRouter = new AIModelRouter();
+    this.confidenceEngine = new ConfidenceEngine();
+    this.usageBilling = new UsageBillingTracker(storage);
   }
 
   async summarizeTenant(tenantId: string) {
@@ -138,6 +144,10 @@ export class AIContextEngine {
     return this.industry.buildExecutionPlan(entities, connectors);
   }
 
+  async getUsageSummary(tenantId: string) {
+    return this.usageBilling.summarizeTenant(tenantId);
+  }
+
   async answerQuestion(
     tenantId: string,
     question: string,
@@ -196,6 +206,22 @@ export class AIContextEngine {
       industryAssessment,
       modelRoute
     });
+    const confidenceReport = this.confidenceEngine.evaluate({
+      retrieval: agentResponse.retrieval,
+      readinessScore: industryAssessment.readiness.overallScore,
+      entityCount: entities.length
+    });
+    const usage = await this.usageBilling.trackAnswer({
+      tenantId,
+      userId: options.userId,
+      module: options.module ?? 'general',
+      workflow: modelRoute.workflow,
+      model: `${modelRoute.providerHint}:${modelRoute.modelClass}`,
+      prompt: question,
+      contextText: agentResponse.retrieval.contextText,
+      answer: agentResponse.answer,
+      cached: false
+    });
 
     const summary = await this.buildTenantSummary(tenantId, entities, connectors);
     const response = {
@@ -204,13 +230,17 @@ export class AIContextEngine {
       answer: agentResponse.answer,
       plan: agentResponse.plan,
       confidence: agentResponse.confidence,
+      confidenceScore: confidenceReport.score,
+      confidenceReport,
       evidence: agentResponse.citations,
+      retrieval: agentResponse.retrieval.diagnostics,
       modelRoute,
       industryProfile: {
         primaryIndustry: industryAssessment.primaryIndustry,
         label: industryAssessment.label,
         readinessScore: industryAssessment.readiness.overallScore
       },
+      usage,
       summary,
       cached: false,
       budget

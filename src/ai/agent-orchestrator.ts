@@ -1,6 +1,6 @@
 import { CanonicalEntity } from '../models/canonical';
 import { ContextStorage } from '../storage/context-storage';
-import { RetrievalService, type Citation } from '../knowledge_base/retrieval-service';
+import { RetrievalService, type Citation, type RetrievalResult } from '../knowledge_base/retrieval-service';
 import { IndustryAssessment } from '../industry/types';
 import { ModelRouteDecision } from './model-router';
 
@@ -20,6 +20,7 @@ export interface AgentAnswer {
   answer: string;
   citations: Citation[];
   confidence: 'low' | 'medium' | 'high';
+  retrieval: RetrievalResult;
 }
 
 export class AgentOrchestrator {
@@ -61,7 +62,8 @@ export class AgentOrchestrator {
       plan,
       answer: reviewed.answer,
       citations: retrieval.citations,
-      confidence: reviewed.confidence
+      confidence: reviewed.confidence,
+      retrieval
     };
   }
 

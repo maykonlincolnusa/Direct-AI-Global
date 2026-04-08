@@ -132,7 +132,11 @@ export class ContextIngestionPipeline {
         metadata: {
           entityType: entity.entityType,
           source: entity.source,
-          updatedAt: entity.updatedAt
+          updatedAt: entity.updatedAt,
+          qualityScore: entity.qualityScore ?? 0,
+          confidence: entity.confidence ?? 0,
+          domains: entity.domains ?? [],
+          industryHints: entity.industryHints ?? []
         }
       });
     }

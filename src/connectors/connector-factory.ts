@@ -21,18 +21,43 @@ export function createConnector(type: SourceConnectorType, options: Record<strin
       return new GoogleBusinessProfileConnector(
         String(options.connectorId ?? 'google-business-profile'),
         {
+          accountName: typeof options.accountName === 'string' ? options.accountName : undefined,
           locationId: String(options.locationId ?? ''),
-          profileName: String(options.profileName ?? 'Business Profile')
+          locationName: typeof options.locationName === 'string' ? options.locationName : undefined,
+          profileName: String(options.profileName ?? 'Business Profile'),
+          accessToken: typeof options.accessToken === 'string' ? options.accessToken : undefined,
+          baseUrl: typeof options.baseUrl === 'string' ? options.baseUrl : undefined,
+          limit: Number(options.limit ?? 20)
         }
       );
     case 'crm':
-      return new CrmConnector(String(options.connectorId ?? 'crm-stub'));
+      return new CrmConnector(String(options.connectorId ?? 'crm-hubspot'), {
+        provider: 'hubspot',
+        accessToken: typeof options.accessToken === 'string' ? options.accessToken : undefined,
+        baseUrl: typeof options.baseUrl === 'string' ? options.baseUrl : undefined,
+        limit: Number(options.limit ?? 50)
+      });
     case 'erp':
-      return new ErpConnector(String(options.connectorId ?? 'erp-stub'));
+      return new ErpConnector(String(options.connectorId ?? 'erp-rest'), {
+        provider: 'generic_rest',
+        baseUrl: typeof options.baseUrl === 'string' ? options.baseUrl : undefined,
+        accessToken: typeof options.accessToken === 'string' ? options.accessToken : undefined,
+        limit: Number(options.limit ?? 50)
+      });
     case 'financial':
-      return new FinancialConnector(String(options.connectorId ?? 'financial-stub'));
+      return new FinancialConnector(String(options.connectorId ?? 'financial-stripe'), {
+        provider: 'stripe',
+        secretKey: typeof options.secretKey === 'string' ? options.secretKey : undefined,
+        baseUrl: typeof options.baseUrl === 'string' ? options.baseUrl : undefined,
+        limit: Number(options.limit ?? 50)
+      });
     case 'social':
-      return new SocialConnector(String(options.connectorId ?? 'social-stub'));
+      return new SocialConnector(String(options.connectorId ?? 'social-rss'), {
+        provider: 'rss',
+        feedUrl: String(options.feedUrl ?? ''),
+        network: typeof options.network === 'string' ? options.network : undefined,
+        limit: Number(options.limit ?? 20)
+      });
     case 'manual_upload':
       return new ManualUploadConnector(
         String(options.connectorId ?? 'manual-upload'),

@@ -71,6 +71,10 @@ export class DirectPlatform {
     return this.ai.getExecutionPlan(tenantId);
   }
 
+  async getUsageSummary(tenantId: string) {
+    return this.ai.getUsageSummary(tenantId);
+  }
+
   async ask(tenantId: string, question: string) {
     return this.ai.answerQuestion(tenantId, question);
   }

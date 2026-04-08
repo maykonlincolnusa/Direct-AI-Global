@@ -1733,3 +1733,154 @@ textarea {
     grid-template-columns: 1fr;
   }
 }
+
+.executive-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.chip-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.stack-list {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.coverage-list,
+.priority-list,
+.recommendation-list {
+  display: grid;
+  gap: 14px;
+}
+
+.coverage-card,
+.priority-card,
+.recommendation-card {
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.coverage-top,
+.priority-header,
+.integration-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.coverage-top strong,
+.priority-header h4,
+.recommendation-card h4,
+.integration-top h3 {
+  margin: 0;
+}
+
+.coverage-bar {
+  margin: 12px 0 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.coverage-bar span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--orange), var(--teal));
+}
+
+.coverage-card p,
+.priority-card p,
+.recommendation-card p {
+  margin: 10px 0 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.integration-card {
+  display: grid;
+  gap: 16px;
+}
+
+.integration-top p {
+  margin: 4px 0 0;
+  color: var(--dim);
+  line-height: 1.45;
+}
+
+.integration-meta-stack {
+  display: grid;
+  gap: 10px;
+}
+
+.integration-meta-stack p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+.btn-connected {
+  cursor: pointer;
+}
+
+.modal-field-list {
+  display: grid;
+  gap: 4px;
+}
+
+.modal-hint,
+.modal-error {
+  margin: 16px 0 0;
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
+.modal-hint {
+  color: var(--muted);
+}
+
+.modal-error {
+  color: #ff9f7f;
+}
+
+.copilot-msg-user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.copilot-msg-user .copilot-msg-avatar {
+  background: rgba(19, 213, 166, 0.15);
+  color: var(--teal);
+}
+
+.copilot-meta,
+.copilot-evidence {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.copilot-send:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 1200px) {
+  .executive-grid {
+    grid-template-columns: 1fr;
+  }
+}

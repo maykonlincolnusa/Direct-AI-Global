@@ -93,6 +93,13 @@ async function routeRequest(platform: DirectPlatform, req: IncomingMessage, res:
     return sendJson(res, 200, response);
   }
 
+  const usageMatch = path.match(/^\/api\/tenants\/([^/]+)\/context\/usage$/);
+  if (method === 'GET' && usageMatch) {
+    const tenantId = decodeURIComponent(usageMatch[1]);
+    const response = await platform.getUsageSummary(tenantId);
+    return sendJson(res, 200, response);
+  }
+
   const connectorRecommendationsMatch = path.match(/^\/api\/tenants\/([^/]+)\/connectors\/recommendations$/);
   if (method === 'GET' && connectorRecommendationsMatch) {
     const tenantId = decodeURIComponent(connectorRecommendationsMatch[1]);

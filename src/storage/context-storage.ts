@@ -2,6 +2,7 @@ import { mkdir, readFile, writeFile, appendFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { SourceRecord } from '../connectors/types';
 import { CanonicalEntity } from '../models/canonical';
+import type { UsageChargeRecord } from '../billing/usage-billing';
 
 const STORAGE_ROOT = resolve('.direct-context-data');
 
@@ -56,6 +57,16 @@ export class ContextStorage {
       ...event,
       at: new Date().toISOString()
     });
+  }
+
+  async appendUsageLog(tenantId: string, event: UsageChargeRecord) {
+    const target = this.pathFor(tenantId, 'usage.ndjson');
+    await this.appendJsonLine(target, event);
+  }
+
+  async listUsageLogs(tenantId: string) {
+    const target = this.pathFor(tenantId, 'usage.ndjson');
+    return this.readJsonLines<UsageChargeRecord>(target);
   }
 
   private pathFor(tenantId: string, fileName: string) {
